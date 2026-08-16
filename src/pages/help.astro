@@ -3,7 +3,8 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { COMPANY, STORE_URL, CTA, url } from '../consts';
+import CtaBand from '../components/CtaBand.astro';
+import { COMPANY, STORE_URL, PROMO, money, url } from '../consts';
 import ipadResults from '../assets/ipad-results.png';
 
 const tel = `tel:+1${COMPANY.phone.replace(/\D/g, '')}`;
@@ -29,8 +30,9 @@ const faqs = [
     a: 'A finger or a stylus both work. Whichever you use, use it the same way across your caseload.',
   },
   {
-    q: 'How do the 100 free tests work?',
-    a: 'You get 100 tests to use across the year. No credit card, no automatic renewal.',
+    q: 'What does a license cost?',
+    a: `A one-year VMAT license is ${money(PROMO.price)} through ${PROMO.endsLabel}, down from ${money(PROMO.listPrice)}. Every product and the training rates are on the pricing page.`,
+    link: { href: url('/pricing/'), label: 'pricing page' },
   },
   {
     q: 'Which iPads are supported?',
@@ -59,7 +61,7 @@ const schema = {
 
 <Base
   title="Help"
-  description="Reach a real person about a VMAT administration in progress: call 888-339-6112, watch the tutorial, or read answers on norms, stylus use, and free tests."
+  description="Reach a real person about a VMAT administration in progress: call 888-339-6112, watch the tutorial, or read answers on norms, stylus use, and license pricing."
   schema={schema}
 >
   <Header />
@@ -189,29 +191,7 @@ const schema = {
         > and it will probably end up on this page.
       </p>
     </section>
-
-    <section class="bg-green-700">
-      <div
-        class="psy-container flex flex-wrap items-center justify-between gap-8 py-22"
-      >
-        <div>
-          <h2
-            class="max-w-[18ch] text-[clamp(30px,3.8vw,48px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white"
-          >
-            Your first hundred tests are free.
-          </h2>
-          <p class="mt-4 max-w-[46ch] text-[18px] leading-relaxed text-white/92">
-            Enough to run it across a real caseload before deciding anything.
-          </p>
-        </div>
-        <a
-          href={STORE_URL}
-          class="inline-flex h-14 flex-none items-center rounded-md bg-white px-8 text-[17px] font-semibold text-green-800 transition-colors hover:bg-green-50 active:scale-[0.98]"
-        >
-          {CTA.primary}
-        </a>
-      </div>
-    </section>
+    <CtaBand />
   </main>
 
   <Footer />

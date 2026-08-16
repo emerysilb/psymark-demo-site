@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CtaBand from '../components/CtaBand.astro';
 import { STORE_URL, CTA } from '../consts';
 import ipadResults from '../assets/ipad-results.png';
 import hummingbird from '../assets/hero-bird.png';
@@ -35,7 +36,7 @@ const stepOffset = ['md:col-start-1', 'md:col-start-3', 'md:col-start-5'];
 
 <Base
   title="VMAT, the digital visual-motor assessment"
-  description="VMAT is a standardized visual-motor assessment for iPad that scores itself. Post Covid Norms for ages 4 to 11, instant reports, and 100 free tests to start."
+  description="VMAT is a standardized visual-motor assessment for iPad that scores itself. Post Covid Norms for ages 4 to 11 from 41 states. $9.99 for a one-year license."
 >
   <Header />
 
@@ -140,14 +141,6 @@ const stepOffset = ['md:col-start-1', 'md:col-start-3', 'md:col-start-5'];
             </dd>
             <dt class="mt-1.5 text-sm text-white/70">States in the norm sample</dt>
           </div>
-          <div>
-            <dd
-              class="tabular font-mono text-[34px] font-semibold tracking-[-0.02em] text-green-300"
-            >
-              100
-            </dd>
-            <dt class="mt-1.5 text-sm text-white/70">Free tests to start</dt>
-          </div>
         </dl>
       </div>
     </section>
@@ -221,29 +214,7 @@ const stepOffset = ['md:col-start-1', 'md:col-start-3', 'md:col-start-5'];
         </div>
       </div>
     </section>
-
-    <section class="bg-green-700">
-      <div
-        class="psy-container flex flex-wrap items-center justify-between gap-8 py-22"
-      >
-        <div>
-          <h2
-            class="max-w-[18ch] text-[clamp(30px,3.8vw,48px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white"
-          >
-            Your first hundred tests are free.
-          </h2>
-          <p class="mt-4 max-w-[46ch] text-[18px] leading-relaxed text-white/92">
-            Enough to run it across a real caseload before deciding anything.
-          </p>
-        </div>
-        <a
-          href={STORE_URL}
-          class="inline-flex h-14 flex-none items-center rounded-md bg-white px-8 text-[17px] font-semibold text-green-800 transition-colors hover:bg-green-50 active:scale-[0.98]"
-        >
-          {CTA.primary}
-        </a>
-      </div>
-    </section>
+    <CtaBand />
   </main>
 
   <Footer />

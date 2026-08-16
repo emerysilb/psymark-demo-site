@@ -3,7 +3,8 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { COMPANY, STORE_URL, CTA } from '../consts';
+import CtaBand from '../components/CtaBand.astro';
+import { COMPANY, STORE_URL, PROMO, money } from '../consts';
 import vmatShot from '../assets/ipad-results.png';
 import vmsShot from '../assets/product-vms.png';
 import vmpShot from '../assets/product-vmp.png';
@@ -26,8 +27,10 @@ const products = [
     name: 'Visual Motor Abilities Test',
     abbr: 'VMAT',
     term: '1 year license',
-    price: 9.99,
-    was: 49.99,
+    // Promotional. Both numbers and the end date come from PROMO in consts.ts.
+    price: PROMO.price,
+    was: PROMO.listPrice,
+    promoEnds: PROMO.endsLabel,
     shot: vmatShot,
     alt: 'The VMAT score report on iPad: a standard score plotted on the normal curve beside percentile ranks.',
     // The store's VMAT listing has no feature copy of its own, so these are
@@ -96,10 +99,9 @@ const training = {
   ],
 };
 
-const money = (n: number) =>
-  n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
-
 // Built from the same array as the visible prices, so the two cannot drift.
+// `priceValidUntil` is what stops Google from serving the promotional price
+// after the promotion has ended.
 const schema = {
   '@context': 'https://schema.org',
   '@graph': products.map((p) => ({
@@ -112,6 +114,7 @@ const schema = {
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
       url: STORE_URL,
+      ...(p.promoEnds ? { priceValidUntil: PROMO.endsISO } : {}),
     },
   })),
 };
@@ -133,8 +136,9 @@ const schema = {
           Every tool is a one-year license.
         </h1>
         <p class="mt-[22px] max-w-[56ch] text-[19px] leading-relaxed text-slate-600">
-          Priced per practitioner, per year. No per-test fee, no credit card to start, and no
-          automatic renewal. Checkout is handled by the Psymark store.
+          Priced per practitioner, per year. No per-test fee and no automatic renewal. The VMAT is
+          on promotional pricing through {PROMO.endsLabel}. Checkout is handled by the Psymark
+          store.
         </p>
       </div>
     </section>
@@ -179,6 +183,13 @@ const schema = {
                   )}
                 </div>
                 <div class="mt-1 text-sm text-slate-500">{p.term}</div>
+                {
+                  p.promoEnds && (
+                    <div class="mt-3 inline-flex rounded-md bg-green-50 px-3 py-1.5 text-[13px] font-semibold text-green-800">
+                      Promotional price through {p.promoEnds}
+                    </div>
+                  )
+                }
 
                 <div class="mt-6 border-t border-slate-200 pt-5 text-sm font-semibold text-navy-700">
                   {p.who}
@@ -267,27 +278,7 @@ const schema = {
         </div>
       </div>
     </section>
-
-    <section class="bg-green-700">
-      <div class="psy-container flex flex-wrap items-center justify-between gap-8 py-22">
-        <div>
-          <h2
-            class="max-w-[18ch] text-[clamp(30px,3.8vw,48px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white"
-          >
-            Your first hundred tests are free.
-          </h2>
-          <p class="mt-4 max-w-[46ch] text-[18px] leading-relaxed text-white/92">
-            Enough to run it across a real caseload before deciding anything.
-          </p>
-        </div>
-        <a
-          href={STORE_URL}
-          class="inline-flex h-14 flex-none items-center rounded-md bg-white px-8 text-[17px] font-semibold text-green-800 transition-colors hover:bg-green-50 active:scale-[0.98]"
-        >
-          {CTA.primary}
-        </a>
-      </div>
-    </section>
+    <CtaBand />
   </main>
 
   <Footer />

@@ -2,7 +2,8 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { COMPANY } from '../consts';
+import CtaBand from '../components/CtaBand.astro';
+import { COMPANY, PROMO, money } from '../consts';
 
 // The technical manual goes out by email, so both CTAs are the same mailto with
 // different subject lines. Address comes from consts so it changes in one place.
@@ -199,27 +200,12 @@ const scoringPoints = [
         </p>
       </div>
     </section>
-
-    <section class="bg-green-700">
-      <div class="psy-container flex flex-wrap items-center justify-between gap-8 py-22">
-        <div>
-          <h2
-            class="max-w-[20ch] text-[clamp(30px,3.8vw,48px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white"
-          >
-            Read it before you buy it.
-          </h2>
-          <p class="mt-4 max-w-[46ch] text-[18px] leading-relaxed text-white/92">
-            The technical manual goes out on request, and your first hundred tests are free.
-          </p>
-        </div>
-        <a
-          href={manualHref}
-          class="inline-flex h-14 flex-none items-center rounded-md bg-white px-8 text-[17px] font-semibold text-green-800 transition-colors hover:bg-green-50 active:scale-[0.98]"
-        >
-          Request the technical manual
-        </a>
-      </div>
-    </section>
+    <CtaBand
+      title="Read it before you buy it."
+      body={`The technical manual goes out on request, and a one-year license is ${money(PROMO.price)} through ${PROMO.endsLabel}.`}
+      ctaLabel="Request the technical manual"
+      ctaHref={manualHref}
+    />
   </main>
 
   <Footer />

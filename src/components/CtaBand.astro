@@ -1,0 +1,45 @@
+---
+import { STORE_URL, CTA, PROMO, money } from '../consts';
+
+/**
+ * The closing green band. It appears at the bottom of every page.
+ *
+ * It exists as a component because it carries the promotional price and its
+ * end date. Those were duplicated across six pages before, which is one place
+ * to forget when the promotion lapses. Change the numbers in `PROMO` in
+ * consts.ts and every page follows.
+ */
+interface Props {
+  /** Override the headline. Defaults to the promotional price. */
+  title?: string;
+  body?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const {
+  title = `A one-year VMAT license is ${money(PROMO.price)}.`,
+  body = `Normally ${money(PROMO.listPrice)}. Promotional pricing runs through ${PROMO.endsLabel}.`,
+  ctaLabel = CTA.primary,
+  ctaHref = STORE_URL,
+} = Astro.props;
+---
+
+<section class="bg-green-700">
+  <div class="psy-container flex flex-wrap items-center justify-between gap-8 py-22">
+    <div>
+      <h2
+        class="max-w-[20ch] text-[clamp(30px,3.8vw,48px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white"
+      >
+        {title}
+      </h2>
+      <p class="mt-4 max-w-[52ch] text-[18px] leading-relaxed text-white/92">{body}</p>
+    </div>
+    <a
+      href={ctaHref}
+      class="inline-flex h-14 flex-none items-center rounded-md bg-white px-8 text-[17px] font-semibold text-green-800 transition-colors hover:bg-green-50 active:scale-[0.98]"
+    >
+      {ctaLabel}
+    </a>
+  </div>
+</section>

@@ -44,6 +44,30 @@ export const NAV = [
 
 export const STORE_URL = 'https://psymark-store.square.site/';
 
+/**
+ * VMAT promotional pricing.
+ *
+ * This is the ONLY place the promo price, the list price and the end date are
+ * written down. Six pages read from it, the pricing page's VMAT card reads from
+ * it, and it sets `priceValidUntil` in the Product schema.
+ *
+ * WHEN THE PROMOTION ENDS: change these values here and nowhere else, then
+ * rebuild and push. Leaving a lapsed promo up means the site advertises $9.99
+ * while checkout charges $49.99.
+ */
+export const PROMO = {
+  price: 9.99,
+  listPrice: 49.99,
+  /** ISO 8601, for structured data. */
+  endsISO: '2026-09-30',
+  /** How the date reads in visible copy. */
+  endsLabel: 'September 30, 2026',
+} as const;
+
+/** Formats a price the one way the site writes prices. */
+export const money = (n: number) =>
+  n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+
 /** One label per intent. Do not add a second way of saying "buy". */
 export const CTA = {
   primary: 'Buy VMAT',
