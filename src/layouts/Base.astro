@@ -11,9 +11,16 @@ interface Props {
   schema?: Record<string, unknown>;
   /** Extra classes on <body>, used by concept pages to swap type stacks. */
   bodyClass?: string;
+  /**
+   * Which family to preload. Only the font that renders the headline should be
+   * preloaded: preloading all four costs ~10 requests before first paint and
+   * pushes out LCP. Once a design direction is chosen there will be one family
+   * and this prop can go away.
+   */
+  font?: 'switzer' | 'cabinet' | 'general' | 'satoshi';
 }
 
-const { bodyClass = '', ...seo } = Astro.props;
+const { bodyClass = '', font = 'switzer', ...seo } = Astro.props;
 ---
 
 <!doctype html>
@@ -24,11 +31,11 @@ const { bodyClass = '', ...seo } = Astro.props;
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    {/* Self-hosted, subset and preloaded by Astro. No external font requests. */}
-    <Font cssVariable="--font-switzer" preload />
-    <Font cssVariable="--font-cabinet" preload />
-    <Font cssVariable="--font-general" />
-    <Font cssVariable="--font-satoshi" preload />
+    {/* Self-hosted and subset by Astro. No external font requests. */}
+    <Font cssVariable="--font-switzer" preload={font === 'switzer'} />
+    <Font cssVariable="--font-cabinet" preload={font === 'cabinet'} />
+    <Font cssVariable="--font-general" preload={font === 'general'} />
+    <Font cssVariable="--font-satoshi" preload={font === 'satoshi'} />
 
     <Seo {...seo} />
   </head>
