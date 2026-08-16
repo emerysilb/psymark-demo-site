@@ -9,7 +9,7 @@ export const SITE = {
   titleSuffix: 'Psymark',
   /** Fallback description. Individual pages should always set their own. */
   description:
-    'VMAT is the first fully digital standardized visual-motor assessment for iPad. Automatic scoring, instant reports, and post-COVID norms for school psychologists and occupational therapists.',
+    'VMAT is the first fully digital standardized visual-motor assessment for iPad. Automatic scoring, instant reports, and Post Covid Norms for school psychologists and occupational therapists.',
   /** Production canonical. The deploy target can override it, see astro.config.mjs. */
   url: 'https://www.psymark.ai',
   locale: 'en_US',
