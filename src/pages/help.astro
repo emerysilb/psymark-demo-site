@@ -1,0 +1,218 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { COMPANY, STORE_URL, CTA, url } from '../consts';
+import ipadResults from '../assets/ipad-results.png';
+
+const tel = `tel:+1${COMPANY.phone.replace(/\D/g, '')}`;
+
+// Two answers below are marked `pending`. They render in muted italic instead
+// of being guessed at, because a wrong answer about iPad support or student
+// data storage costs Karen a district sale. Replace `answer` with the real text
+// and delete `pending` when she confirms them.
+const faqs = [
+  {
+    q: 'Who can administer the VMAT?',
+    a: 'Occupational therapists and school psychologists administer it as a standardized assessment. The VMS is the version built for general-education teachers and interventionists to screen with.',
+  },
+  {
+    q: 'What ages is it normed for?',
+    a: 'Ages 4 to 9, against a post-COVID standardization sample. Details are on the research page.',
+    // The answer stays one sentence so the FAQ schema gets the whole thing;
+    // `link` just says which words inside it become the anchor.
+    link: { href: url("/research/"), label: 'research page' },
+  },
+  {
+    q: 'Does the student need a stylus?',
+    a: 'A finger or a stylus both work. Whichever you use, use it the same way across your caseload.',
+  },
+  {
+    q: 'How do the 100 free tests work?',
+    a: 'You get 100 tests to use across the year. No credit card, no automatic renewal.',
+  },
+  {
+    q: 'Which iPads are supported?',
+    a: 'Supported models and iPadOS version to confirm.',
+    pending: true,
+  },
+  {
+    q: 'Where is student data stored?',
+    a: 'Storage, retention, and district agreement language to confirm.',
+    pending: true,
+  },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs
+    .filter((f) => !f.pending)
+    .map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+};
+---
+
+<Base
+  title="Help"
+  description="Reach a real person about a VMAT administration in progress: call 888-339-6112, watch the tutorial, or read answers on norms, stylus use, and free tests."
+  schema={schema}
+>
+  <Header />
+
+  <main id="main">
+    {/* Contact first. If a student is in the room, the phone number is the page. */}
+    <section class="border-b border-green-100 bg-green-50">
+      <div class="psy-container pb-18 pt-20">
+        <h1
+          class="max-w-[22ch] text-[clamp(40px,4.6vw,60px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-navy-700"
+        >
+          Help with a test in progress.
+        </h1>
+        <p class="mt-[22px] max-w-[54ch] text-[19px] leading-relaxed text-slate-600">
+          A real person answers. If a student is sitting in front of you right now, call.
+        </p>
+
+        <div
+          class="mt-10 grid gap-[clamp(24px,4vw,48px)] sm:grid-cols-2 lg:grid-cols-3"
+        >
+          <div class="border-t-2 border-green-600 pt-[18px]">
+            <div class="text-sm text-slate-600">Call</div>
+            <a
+              href={tel}
+              class="mt-2 block font-mono text-2xl font-semibold text-navy-700 hover:text-green-800"
+            >
+              {COMPANY.phone}
+            </a>
+          </div>
+          <div class="border-t-2 border-green-600 pt-[18px]">
+            <div class="text-sm text-slate-600">Email</div>
+            <a
+              href={`mailto:${COMPANY.email}`}
+              class="mt-2 block text-[22px] font-semibold text-navy-700 hover:text-green-800"
+            >
+              {COMPANY.email}
+            </a>
+          </div>
+          <div class="border-t-2 border-green-600 pt-[18px]">
+            <div class="text-sm text-slate-600">Orders and invoices</div>
+            <a
+              href={STORE_URL}
+              class="mt-2 block text-[22px] font-semibold text-navy-700 hover:text-green-800"
+            >
+              Psymark store
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-navy-700">
+      <div
+        class="psy-container grid items-center gap-[clamp(40px,6vw,80px)] py-24 md:grid-cols-[6fr_5fr]"
+      >
+        <div>
+          <h2
+            class="max-w-[24ch] text-[clamp(28px,3.4vw,44px)] font-bold leading-[1.14] tracking-[-0.03em] text-white"
+          >
+            Watch an administration first.
+          </h2>
+          <p class="mt-5 max-w-[52ch] text-[19px] leading-relaxed text-white/78">
+            The walkthrough covers setting up the iPad, seating the student, running the prompts,
+            and reading the report that comes out the other end. Most practitioners are ready after
+            one viewing.
+          </p>
+          {/* TODO: point at the real tutorial once Karen supplies the URL. */}
+          <a
+            href={url("/tutorials/")}
+            class="mt-7 inline-flex h-13 items-center rounded-md bg-white px-7 text-[17px] font-semibold text-navy-800 transition-colors hover:bg-slate-100 active:scale-[0.98]"
+          >
+            Watch the tutorial
+          </a>
+        </div>
+        <Image
+          src={ipadResults}
+          alt="A VMAT score report on iPad, showing the standard score on a normal curve with percentile ranks."
+          widths={[400, 640, 900]}
+          sizes="(min-width: 768px) 45vw, 100vw"
+          class="block w-full rounded-lg"
+        />
+      </div>
+    </section>
+
+    <section class="psy-container py-26">
+      <h2
+        class="text-[clamp(28px,3vw,40px)] font-bold tracking-[-0.025em] text-navy-700"
+      >
+        Questions we get
+      </h2>
+
+      <dl class="mt-10 border-b border-slate-200">
+        {
+          faqs.map((f) => (
+            <div class="grid gap-[clamp(24px,4vw,56px)] border-t border-slate-200 py-[26px] md:grid-cols-[5fr_7fr]">
+              <dt class="text-[19px] font-semibold leading-[1.35] text-navy-700">{f.q}</dt>
+              <dd
+                class:list={[
+                  'm-0 text-[17px] leading-relaxed',
+                  f.pending ? 'italic text-slate-500' : 'text-slate-600',
+                ]}
+              >
+                {
+                  f.link ? (
+                    <Fragment>
+                      {f.a.split(f.link.label)[0]}
+                      <a href={f.link.href} class="font-semibold text-green-700 hover:text-green-800">
+                        {f.link.label}
+                      </a>
+                      {f.a.split(f.link.label)[1]}
+                    </Fragment>
+                  ) : (
+                    f.a
+                  )
+                }
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <p class="mt-8 text-[17px] text-slate-600">
+        Not here?{' '}
+        <a
+          href={`mailto:${COMPANY.email}?subject=VMAT%20question`}
+          class="font-semibold text-green-700 hover:text-green-800">Email the question</a
+        > and it will probably end up on this page.
+      </p>
+    </section>
+
+    <section class="bg-green-700">
+      <div
+        class="psy-container flex flex-wrap items-center justify-between gap-8 py-22"
+      >
+        <div>
+          <h2
+            class="max-w-[18ch] text-[clamp(30px,3.8vw,48px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white"
+          >
+            Your first hundred tests are free.
+          </h2>
+          <p class="mt-4 max-w-[46ch] text-[18px] leading-relaxed text-white/92">
+            Enough to run it across a real caseload before deciding anything.
+          </p>
+        </div>
+        <a
+          href={STORE_URL}
+          class="inline-flex h-14 flex-none items-center rounded-md bg-white px-8 text-[17px] font-semibold text-green-800 transition-colors hover:bg-green-50 active:scale-[0.98]"
+        >
+          {CTA.primary}
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>

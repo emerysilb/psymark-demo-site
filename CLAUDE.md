@@ -37,6 +37,7 @@ editing. Start it before showing Karen anything.
 |---|---|
 | Testimonials | `src/content/testimonials/*.md`, one file per person |
 | Pages | `src/pages/*.astro`, filename becomes the URL |
+| Nav bar and footer | `src/components/Header.astro`, `Footer.astro` |
 | Site name, nav, phone, email, store link | `src/consts.ts` |
 | Colours, fonts, spacing, radius | `src/styles/global.css` |
 | Images | `src/assets/` (optimized) or `public/img/` (served as-is) |
@@ -115,23 +116,32 @@ Also:
   so explicitly and set up a redirect in `public/_redirects` first.
 - `public/robots.txt` deliberately **allows** AI crawlers. The old site blocked
   them. Do not re-block without asking.
-- The sitemap is generated at build. `/concepts/` is excluded on purpose.
+- The sitemap is generated at build and includes every page.
 
 ## Design rules
 
-The visual system is locked. Do not improvise new values.
+The visual system comes from the **Psymark Design System** project on
+claude.ai/design. `src/styles/global.css` is the local mirror of it. Do not
+improvise new values: if something is missing, it belongs in the design system
+first.
 
-- **Colours:** only the tokens in `src/styles/global.css`. Navy `#1F3B61` and
-  emerald `#069876` are the brand and came off the old site.
-- **`emerald` vs `emerald-ink`:** the brand green measures only 3.65:1 against
-  white, which fails accessibility for normal-size text. Use `emerald-ink`
-  (`#05745A`) for buttons, links, and anything under 18px. Use `emerald` only
-  for large display text, icons, and graphics. **Never put white text on
-  `emerald`.** The old site's Buy Now button did and it was unreadable for
-  low-vision users.
-- **One corner radius:** `rounded-brand` (10px). Do not add a second.
-- **Fonts** are configured in `astro.config.mjs` and self-hosted by Astro. Do
-  not add a Google Fonts `<link>`.
+- **Colours:** only what is in `src/styles/global.css`. Tailwind's stock palette
+  is deliberately deleted there, so `bg-emerald-500` and friends do not exist
+  and will silently do nothing. Brand green is `green-600` `#009966`, brand navy
+  is `navy-700` `#1E3A5F`, body copy is `slate-600`.
+- **`green-600` vs `green-700`:** the brand green measures 3.9:1 on white, which
+  passes only for large text. Use `green-700` (`#007D53`, 5.2:1) for buttons,
+  links, and anything under 18px. Use `green-600` for large display text, rules,
+  and icons. **Never put white text on `green-600` or lighter.** The old site's
+  Buy Now button did and it was unreadable for low-vision users.
+- **Two radii, no more:** `rounded-md` (10px) for buttons and pills,
+  `rounded-lg` (14px) for cards and images.
+- **Every full-width block uses `psy-container`.** That is what keeps the logo,
+  the h1 and every paragraph on one left edge down the whole page. Do not
+  hand-roll `mx-auto max-w-... px-...`.
+- **Fonts** are Plus Jakarta Sans and IBM Plex Mono, configured in
+  `astro.config.mjs` and self-hosted by Astro. Do not add a Google Fonts
+  `<link>`. Mono is for scores and phone numbers only.
 - **No em-dashes** in visible copy. Use a period, a comma, or a regular hyphen.
 - **Motion** is deliberately restrained. Reveals use CSS `animation-timeline`,
   which costs nothing and respects `prefers-reduced-motion`. Do not add an
@@ -140,22 +150,20 @@ The visual system is locked. Do not improvise new values.
   because the hero video preloaded all 104 seconds while paused. Practitioners
   open this on school wifi. Any video gets `preload="none"` and a poster image.
 
-## Picking a design direction
+## Answers we do not have yet
 
-`src/pages/concepts/{a,b,c}.astro` are three competing directions, and
-`src/pages/index.astro` is currently a chooser page. All are `noindex` and
-excluded from the sitemap.
+Two FAQ answers on `src/pages/help.astro` are marked `pending: true` and render
+in muted italic: which iPads are supported, and where student data is stored.
 
-Once Karen picks one:
-
-1. Build the real homepage from the winning concept into `src/pages/index.astro`.
-2. Delete `src/pages/concepts/` and the unused font families in
-   `astro.config.mjs`.
-3. Remove the sitemap `filter` in `astro.config.mjs`.
+**Do not guess at these.** A wrong answer about device support or student data
+handling is the kind of thing that kills a district purchase. When Karen
+confirms the real wording, replace `a:` and delete the `pending: true` line, and
+the answer joins the page's FAQ schema automatically.
 
 ## Publishing
 
-Cloudflare Pages watches the `main` branch and rebuilds on every push.
+Always build first. **If the build fails, do not push.** Fix it, rebuild, then
+push.
 
 ```bash
 npm run build
@@ -167,19 +175,40 @@ If the build passes:
 git add -A && git commit -m "Add three new testimonials" && git push
 ```
 
-Cloudflare picks it up within about a minute and the site is live one to two
-minutes after that. Tell Karen when it will be visible, and mention that a hard
-refresh may be needed if she does not see it immediately.
+Never push if `git status` shows changes you did not make and cannot explain.
+Ask first.
 
-**If the build fails, do not push.** Fix it, rebuild, then push.
+### Where a push actually goes
 
-Never push directly if `git status` shows changes you did not make and cannot
-explain. Ask first.
+There are two deploy targets, and right now only the first is connected.
+
+| Target | URL | How |
+|---|---|---|
+| **Demo** | `emerysilb.github.io/psymark-demo-site/` | GitHub Actions, `.github/workflows/deploy.yml`, runs on every push to `main` |
+| **Production** | `www.psymark.ai` | Cloudflare Pages, watches `main`. Not connected yet. |
+
+Both build from the same commit. The demo is live one to two minutes after a
+push; Cloudflare, once connected, takes about the same. Tell Karen when it will
+be visible and mention that a hard refresh may be needed.
+
+The demo is served from a subfolder, not a domain root, which is why internal
+links go through the `url()` helper in `src/consts.ts` instead of being written
+as plain `/help/`. **Use `url()` for every internal link and every file in
+`public/`.** A raw `href="/help/"` works locally and 404s on the demo.
+
+Preview builds also emit `noindex` automatically, so Google never sees a
+duplicate of psymark.ai on a github.io URL. That is driven by whether the built
+`site` matches `SITE.url`, and it needs no maintenance.
 
 ## Things to leave alone
 
-- `src/components/Seo.astro` guardrails. The thrown error is the feature.
-- `site` in `astro.config.mjs`. It drives canonical URLs and the sitemap.
+- `src/components/Seo.astro` guardrails. The thrown error is the feature, and so
+  is the automatic `noindex` on preview deploys.
+- `site` in `astro.config.mjs`. It drives canonical URLs and the sitemap. The
+  `SITE_URL` / `BASE_PATH` env vars exist so the demo deploy can override it
+  without editing the file.
 - `public/_redirects` entries, once added. They keep old Squarespace URLs alive.
+  Note this is a **Cloudflare** feature and does nothing on the GitHub Pages
+  demo, so a redirect that "does not work" on the demo is not broken.
 - Form field `name` attributes on the Mailchimp signup. Renaming them silently
   breaks the mailing list.

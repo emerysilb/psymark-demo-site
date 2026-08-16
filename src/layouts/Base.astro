@@ -1,6 +1,7 @@
 ---
 import { Font } from 'astro:assets';
 import Seo from '../components/Seo.astro';
+import { url } from '../consts';
 import '../styles/global.css';
 
 interface Props {
@@ -9,18 +10,7 @@ interface Props {
   image?: string;
   noindex?: boolean;
   schema?: Record<string, unknown>;
-  /** Extra classes on <body>, used by concept pages to swap type stacks. */
-  bodyClass?: string;
-  /**
-   * Which family to preload. Only the font that renders the headline should be
-   * preloaded: preloading all four costs ~10 requests before first paint and
-   * pushes out LCP. Once a design direction is chosen there will be one family
-   * and this prop can go away.
-   */
-  font?: 'switzer' | 'cabinet' | 'general' | 'satoshi';
 }
-
-const { bodyClass = '', font = 'switzer', ...seo } = Astro.props;
 ---
 
 <!doctype html>
@@ -28,21 +18,20 @@ const { bodyClass = '', font = 'switzer', ...seo } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" href={url("/favicon.svg")} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={url("/apple-touch-icon.png")} />
+    <link rel="sitemap" href={url("/sitemap-index.xml")} />
 
     {/* Self-hosted and subset by Astro. No external font requests. */}
-    <Font cssVariable="--font-switzer" preload={font === 'switzer'} />
-    <Font cssVariable="--font-cabinet" preload={font === 'cabinet'} />
-    <Font cssVariable="--font-general" preload={font === 'general'} />
-    <Font cssVariable="--font-satoshi" preload={font === 'satoshi'} />
+    <Font cssVariable="--font-jakarta" preload />
+    <Font cssVariable="--font-plex-mono" />
 
-    <Seo {...seo} />
+    <Seo {...Astro.props} />
   </head>
-  <body class={bodyClass}>
+  <body>
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-brand focus:bg-navy focus:px-4 focus:py-2 focus:text-white"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-navy-700 focus:px-4 focus:py-2 focus:text-white"
     >
       Skip to content
     </a>

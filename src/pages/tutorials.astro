@@ -1,0 +1,127 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { COMPANY, STORE_URL, CTA, url } from '../consts';
+
+/**
+ * Karen has the walkthrough video from the old site, but no file and no
+ * hosting URL has been supplied yet. Fill this in and the player replaces the
+ * placeholder panel below.
+ *
+ * `preload="none"` and a poster are NOT optional. The old homepage shipped
+ * 40 MB on load because a paused hero video buffered all 104 seconds of itself,
+ * and practitioners open this on school wifi.
+ */
+const VIDEO: { src: string; poster: string; captions: string } | null = null;
+
+// Taken verbatim from what the walkthrough is described as covering elsewhere
+// on the site. Do NOT expand these into step-by-step administration
+// instructions: how to administer a standardized assessment is clinical
+// content that has to come from Karen, not from a website build.
+const covers = [
+  'Setting up the iPad',
+  'Seating the student',
+  'Running the prompts',
+  'Reading the report that comes out the other end',
+];
+
+const tel = `tel:+1${COMPANY.phone.replace(/\D/g, '')}`;
+---
+
+<Base
+  title="Tutorials"
+  description="Watch a full VMAT administration before you run your first one: iPad setup, seating the student, running the prompts, and reading the score report."
+>
+  <Header />
+
+  <main id="main">
+    <section class="border-b border-green-100 bg-green-50">
+      <div class="psy-container pb-18 pt-20">
+        <h1
+          class="max-w-[22ch] text-[clamp(40px,4.6vw,60px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-navy-700"
+        >
+          See an administration start to finish.
+        </h1>
+        <p class="mt-[22px] max-w-[54ch] text-[19px] leading-relaxed text-slate-600">
+          Most practitioners are ready after one viewing. Nothing here is required before you
+          start, and support is a phone call away either way.
+        </p>
+      </div>
+    </section>
+
+    <section class="psy-container py-26">
+      <div class="grid gap-[clamp(32px,5vw,64px)] md:grid-cols-[7fr_5fr]">
+        <div>
+          {
+            VIDEO ? (
+              <video
+                controls
+                preload="none"
+                poster={VIDEO.poster}
+                class="w-full rounded-lg border border-slate-200 bg-slate-50"
+              >
+                <source src={VIDEO.src} type="video/mp4" />
+                <track kind="captions" src={VIDEO.captions} srclang="en" label="English" default />
+              </video>
+            ) : (
+              <div class="flex min-h-[280px] items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 p-10">
+                <p class="max-w-[34ch] text-center text-[17px] italic leading-relaxed text-slate-500">
+                  The walkthrough video goes here. Send Karen the file or the link and it will be
+                  on this page the same day.
+                </p>
+              </div>
+            )
+          }
+        </div>
+
+        <div>
+          <h2 class="text-[clamp(24px,2.4vw,30px)] font-bold tracking-[-0.02em] text-navy-700">
+            What it covers
+          </h2>
+          <ul class="mt-6 list-none p-0">
+            {
+              covers.map((item) => (
+                <li class="border-t border-slate-200 py-4 text-[17px] leading-relaxed text-slate-600 last:border-b">
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mt-8 text-[17px] leading-relaxed text-slate-600">
+            Something not covered here?{' '}
+            <a href={url("/help/")} class="font-semibold text-green-700 hover:text-green-800">
+              The help page</a
+            > has the questions we get most, or call{' '}
+            <a href={tel} class="font-mono font-semibold text-green-700 hover:text-green-800"
+              >{COMPANY.phone}</a
+            >.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-green-700">
+      <div class="psy-container flex flex-wrap items-center justify-between gap-8 py-22">
+        <div>
+          <h2
+            class="max-w-[18ch] text-[clamp(30px,3.8vw,48px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white"
+          >
+            Your first hundred tests are free.
+          </h2>
+          <p class="mt-4 max-w-[46ch] text-[18px] leading-relaxed text-white/92">
+            Enough to run it across a real caseload before deciding anything.
+          </p>
+        </div>
+        <a
+          href={STORE_URL}
+          class="inline-flex h-14 flex-none items-center rounded-md bg-white px-8 text-[17px] font-semibold text-green-800 transition-colors hover:bg-green-50 active:scale-[0.98]"
+        >
+          {CTA.primary}
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>

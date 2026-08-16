@@ -1,94 +1,242 @@
 ---
-/**
- * TEMPORARY HOMEPAGE: the concept chooser.
- *
- * Once a direction is picked, this file is replaced by the real homepage built
- * from the winning concept, and src/pages/concepts/ is deleted. See CLAUDE.md,
- * "Picking a design direction".
- */
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { STORE_URL, CTA } from '../consts';
+import ipadResults from '../assets/ipad-results.png';
+import hummingbird from '../assets/hero-bird.png';
 
-const concepts = [
+// Testimonials come from src/content/testimonials/. Add a file, it shows up.
+// The first one is the lead quote and gets the tall card.
+const all = (await getCollection('testimonials')).sort((a, b) => a.data.order - b.data.order);
+const [lead, ...rest] = all;
+
+const steps = [
   {
-    id: 'a',
-    name: 'The Clinical Standard',
-    thesis: 'VMAT is a real standardized instrument, not an app.',
-    argument:
-      'Leads with defensibility: consistent administration, post-2020 norms, report-ready output. Navy-dominant, Switzer, low motion.',
-    bestFor: 'Skeptical veteran clinicians and district purchasing.',
-    risk: 'Plays it safe. Reads closest to the incumbents it is trying to beat.',
-    accent: 'bg-navy',
+    title: 'You administer it',
+    body: 'The student draws on the iPad. Same prompts, same order, same conditions as every other student you have tested this year.',
   },
   {
-    id: 'b',
-    name: 'The Evening Back',
-    thesis: 'The product is time returned to you.',
-    argument:
-      'Leads with caseload pressure and after-hours report writing. Cabinet Grotesk display, emerald-forward, generous air, warmer voice.',
-    bestFor: 'The individual OT or school psych buying with their own PD budget.',
-    risk: 'Sells convenience. A district committee may want the evidence first.',
-    accent: 'bg-emerald-ink',
+    title: 'It scores while you pack up',
+    body: 'No scoring key, no ruler, no second-guessing a borderline form. The standard score is there when the student stands up.',
   },
   {
-    id: 'c',
-    name: 'What The Paper Form Throws Away',
-    thesis: 'Paper keeps the drawing and loses everything else.',
-    argument:
-      'The sharpest attack on the incumbent. Dark, confident, argument-led. Satoshi, ink surface, emerald as the only signal colour.',
-    bestFor: 'Clinicians who already own a Beery VMI and need a reason to switch.',
-    risk: 'The central claim needs confirming with Karen before it can ship.',
-    accent: 'bg-ink',
+    title: 'The write-up is already written',
+    body: 'Percentile ranks, the normal curve, and goal language you can move straight into the evaluation.',
   },
 ];
+
+// Each beat steps further right. Tailwind needs the full class name in the
+// source to generate it, so these are written out rather than built from `i`.
+const stepOffset = ['md:col-start-1', 'md:col-start-3', 'md:col-start-5'];
 ---
 
 <Base
-  title="Design concepts"
-  description="Three design directions for the Psymark site rebuild, each with a different strategic argument for VMAT. Internal review only."
-  noindex
+  title="VMAT, the digital visual-motor assessment"
+  description="VMAT is a standardized visual-motor assessment for iPad that scores itself. Post-COVID norms for ages 4 to 9, instant reports, and 100 free tests to start."
 >
-  <main id="main" class="mx-auto max-w-[1000px] px-6 py-20">
-    <h1 class="font-sans text-4xl font-bold tracking-tight text-navy md:text-5xl">
-      Three directions for Psymark
-    </h1>
-    <p class="mt-5 max-w-[62ch] text-lg leading-relaxed text-slate">
-      Same brand colours, same content, same product. What changes is the
-      argument each one makes for VMAT, and the visual language that follows
-      from it. Open each, then pick the argument you believe.
-    </p>
+  <Header />
 
-    <div class="mt-14 space-y-5">
-      {concepts.map((c) => (
-        <a
-          href={`/concepts/${c.id}/`}
-          class="group grid gap-6 rounded-brand border border-line p-7 transition-all hover:border-navy/30 hover:shadow-card md:grid-cols-12"
+  <main id="main">
+    <section class="border-b border-green-100 bg-green-50">
+      <div
+        class="psy-container grid items-center gap-[clamp(40px,6vw,80px)] pb-22 pt-20 md:grid-cols-[6fr_5fr]"
+      >
+        <div>
+          <h1
+            class="max-w-[19ch] text-[clamp(40px,4.6vw,60px)] font-extrabold leading-[1.04] tracking-[-0.03em] text-navy-700"
+          >
+            Scored before the student stands up.
+          </h1>
+          <p class="mt-[22px] max-w-[46ch] text-[19px] leading-relaxed text-slate-600">
+            VMAT administers in minutes and scores itself, so the visual-motor piece of the
+            evaluation stops following you home.
+          </p>
+          <p class="mt-3.5 text-[15px] text-slate-500">Standardized for iPad, ages 4 to 9.</p>
+          <div class="mt-7 flex flex-wrap items-center gap-3">
+            <a
+              href={STORE_URL}
+              class="inline-flex h-13 items-center rounded-md bg-green-700 px-7 text-[17px] font-semibold text-white shadow-brand transition-colors hover:bg-green-800 active:bg-green-900"
+            >
+              {CTA.primary}
+            </a>
+            <a
+              href="#how"
+              class="inline-flex h-13 items-center rounded-md border border-slate-300 bg-white px-7 text-[17px] font-semibold text-navy-700 transition-colors hover:border-navy-300 hover:text-navy-800"
+            >
+              {CTA.secondary}
+            </a>
+          </div>
+        </div>
+        <Image
+          src={ipadResults}
+          alt="VMAT results on iPad: the student's standard score plotted on a normal curve beside percentile ranks."
+          widths={[400, 640, 900]}
+          sizes="(min-width: 768px) 45vw, 100vw"
+          class="block w-full"
+          loading="eager"
+        />
+      </div>
+    </section>
+
+    <section id="how" class="psy-container py-28">
+      <p
+        class="max-w-[24ch] text-[clamp(28px,3vw,40px)] font-bold leading-[1.2] tracking-[-0.025em] text-navy-700"
+      >
+        Forty students on the caseload. The test should not be the slow part.
+      </p>
+      <ol class="mt-14 grid list-none gap-20 p-0">
+        {
+          steps.map((step, i) => (
+            <li data-reveal class="grid gap-6 md:grid-cols-12">
+              <div class:list={['md:col-span-8', stepOffset[i]]}>
+                <h2 class="text-[clamp(30px,3.4vw,46px)] font-bold leading-[1.12] tracking-[-0.025em] text-navy-700">
+                  {step.title}
+                </h2>
+                <p class="mt-4 max-w-[54ch] text-[18px] leading-relaxed text-slate-600">
+                  {step.body}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="relative overflow-hidden bg-navy-700">
+      <Image
+        src={hummingbird}
+        alt=""
+        aria-hidden="true"
+        widths={[440]}
+        class="pointer-events-none absolute -bottom-10 -right-10 w-[440px] opacity-16"
+      />
+      <div class="relative psy-container py-30">
+        <p
+          class="max-w-[22ch] text-[clamp(34px,4.6vw,60px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-white"
         >
-          <div class="md:col-span-4">
-            <div class={`h-24 rounded-brand ${c.accent}`}></div>
+          Same protocol for every student, every time.
+        </p>
+        <p class="mt-6 max-w-[50ch] text-[18px] leading-relaxed text-white/78">
+          Digital administration removes the examiner drift that paper forms quietly introduce
+          between raters and between sites.
+        </p>
+        <dl class="mt-12 flex flex-wrap gap-12">
+          <div>
+            <dd
+              class="tabular font-mono text-[34px] font-semibold tracking-[-0.02em] text-green-300"
+            >
+              4-9
+            </dd>
+            <dt class="mt-1.5 text-sm text-white/70">Standardized age range</dt>
           </div>
-          <div class="md:col-span-8">
-            <h2 class="text-2xl font-bold tracking-tight text-navy">
-              {c.name}
-              <span
-                class="ml-2 align-middle text-sm font-medium text-emerald-ink opacity-0 transition-opacity group-hover:opacity-100"
-                >Open</span
-              >
-            </h2>
-            <p class="mt-2 text-lg text-navy/80">{c.thesis}</p>
-            <p class="mt-4 max-w-[62ch] leading-relaxed text-slate">{c.argument}</p>
-            <dl class="mt-5 space-y-1.5 text-sm">
-              <div class="flex gap-2">
-                <dt class="shrink-0 font-semibold text-navy">Best for</dt>
-                <dd class="text-slate">{c.bestFor}</dd>
-              </div>
-              <div class="flex gap-2">
-                <dt class="shrink-0 font-semibold text-navy">Risk</dt>
-                <dd class="text-slate">{c.risk}</dd>
-              </div>
-            </dl>
+          <div>
+            <dd
+              class="tabular font-mono text-[34px] font-semibold tracking-[-0.02em] text-green-300"
+            >
+              100
+            </dd>
+            <dt class="mt-1.5 text-sm text-white/70">Free tests to start</dt>
           </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="border-y border-slate-200 bg-slate-50">
+      <div class="psy-container py-26">
+        <h2
+          class="text-[clamp(28px,3vw,36px)] font-bold tracking-[-0.02em] text-navy-700"
+        >
+          From the first practitioners using it
+        </h2>
+        <div class="mt-10 grid items-start gap-5 md:grid-cols-[7fr_5fr]">
+          <figure
+            class="self-start rounded-lg border border-slate-200 bg-white p-10 shadow-card md:row-span-2"
+          >
+            <blockquote
+              class="text-2xl leading-normal tracking-[-0.01em] text-navy-700"
+            >
+              &ldquo;{lead.data.quote}&rdquo;
+            </blockquote>
+            <figcaption class="mt-7 flex items-center gap-3.5">
+              {
+                lead.data.photo && (
+                  <Image
+                    src={lead.data.photo}
+                    alt=""
+                    aria-hidden="true"
+                    width={44}
+                    height={44}
+                    class="h-11 w-11 rounded-full object-cover"
+                  />
+                )
+              }
+              <span class="text-sm leading-[1.35]">
+                <span class="block font-semibold text-navy-700">{lead.data.name}</span>
+                <span class="block text-slate-500">
+                  {lead.data.role}{lead.data.credentials && `, ${lead.data.credentials}`}
+                </span>
+              </span>
+            </figcaption>
+          </figure>
+
+          {
+            rest.map((t) => (
+              <figure class="rounded-lg border border-slate-200 bg-white p-8 shadow-card">
+                <blockquote class="text-[18px] leading-relaxed text-navy-700">
+                  &ldquo;{t.data.quote}&rdquo;
+                </blockquote>
+                <figcaption class="mt-7 flex items-center gap-3.5">
+                  {t.data.photo && (
+                    <Image
+                      src={t.data.photo}
+                      alt=""
+                      aria-hidden="true"
+                      width={44}
+                      height={44}
+                      class="h-11 w-11 rounded-full object-cover"
+                    />
+                  )}
+                  <span class="text-sm leading-[1.35]">
+                    <span class="block font-semibold text-navy-700">{t.data.name}</span>
+                    <span class="block text-slate-500">
+                      {t.data.role}
+                      {t.data.credentials && `, ${t.data.credentials}`}
+                    </span>
+                  </span>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-green-700">
+      <div
+        class="psy-container flex flex-wrap items-center justify-between gap-8 py-22"
+      >
+        <div>
+          <h2
+            class="max-w-[18ch] text-[clamp(30px,3.8vw,48px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white"
+          >
+            Your first hundred tests are free.
+          </h2>
+          <p class="mt-4 max-w-[46ch] text-[18px] leading-relaxed text-white/92">
+            Enough to run it across a real caseload before deciding anything.
+          </p>
+        </div>
+        <a
+          href={STORE_URL}
+          class="inline-flex h-14 flex-none items-center rounded-md bg-white px-8 text-[17px] font-semibold text-green-800 transition-colors hover:bg-green-50 active:scale-[0.98]"
+        >
+          {CTA.primary}
         </a>
-      ))}
-    </div>
+      </div>
+    </section>
   </main>
+
+  <Footer />
 </Base>

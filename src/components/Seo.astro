@@ -1,5 +1,5 @@
 ---
-import { SITE, COMPANY } from '../consts';
+import { SITE, COMPANY, url } from '../consts';
 
 interface Props {
   title: string;
@@ -37,16 +37,27 @@ if (len < 70 || len > 158) {
   );
 }
 
-const canonical = new URL(Astro.url.pathname, SITE.url).href;
-const ogImage = new URL(image, SITE.url).href;
+// Astro.site is whatever the deploy configured; SITE.url is the production
+// fallback for a bare `astro build` with no env set.
+const origin = Astro.site ?? new URL(SITE.url);
+
+/* Anything not served from the production domain is a preview, and a preview
+   must never be indexed. The GitHub Pages demo is a full copy of this site: if
+   Google indexes it, psymark.ai is competing against a duplicate of itself on a
+   github.io URL. This is the guardrail, not robots.txt, because robots.txt is a
+   static file served identically to both deploys. */
+const isPreview = origin.origin !== new URL(SITE.url).origin;
+
+const canonical = new URL(Astro.url.pathname, origin).href;
+const ogImage = new URL(url(image), origin).href;
 const fullTitle = title === SITE.name ? title : `${title} | ${SITE.titleSuffix}`;
 
 const organization = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: COMPANY.legalName,
-  url: SITE.url,
-  logo: new URL('/img/logo.png', SITE.url).href,
+  url: new URL(import.meta.env.BASE_URL, origin).href,
+  logo: new URL(url('/img/logo.png'), origin).href,
   email: COMPANY.email,
   telephone: COMPANY.phone,
 };
@@ -56,7 +67,7 @@ const organization = {
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
 
-{noindex && <meta name="robots" content="noindex, nofollow" />}
+{(noindex || isPreview) && <meta name="robots" content="noindex, nofollow" />}
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content={SITE.name} />

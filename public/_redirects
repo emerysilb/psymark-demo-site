@@ -13,12 +13,16 @@
 
 # --- Abandoned drafts left public on the old site ------------------------
 # (/blog-old was literally titled "NO Blog OLD")
-/blog-old                          /blog/                  301
-/blog-old/*                        /blog/                  301
-/blog-new                          /blog/                  301
+#
+# There is no blog on the new site and no plan for one. These land on the
+# homepage rather than a stub, because a 301 into an empty index reads as a
+# soft 404 to Google and keeps none of the link equity.
+/blog-old                          /                       301
+/blog-old/*                        /                       301
+/blog-new                          /                       301
 /resources-no                      /research/              301
 /help-no                           /help/                  301
-/about-no                          /about/                 301
+/about-no                          /                       301
 
 # --- Help section had six overlapping paths ------------------------------
 /faqs                              /help/                  301
@@ -35,11 +39,14 @@
 /training-info                     /other-tests/           301
 
 # --- Campaign and form pages ---------------------------------------------
-/lp                                /vmat/                  301
-/lets-connect                      /contact/               301
+# The homepage IS the VMAT page, so /lp lands there rather than on a /vmat/
+# that does not exist. /help/ leads with the phone number and email, so it is
+# the contact page in everything but name.
+/lp                                /                       301
+/lets-connect                      /help/                  301
 /standardization-research-interest /research/              301
 
 # --- Placeholder posts that should never have been indexed ---------------
-/blog/Blog*                        /blog/                  301
-/blog/blog-post-title-*            /blog/                  301
-/third-party-articles/blog-post-title-*  /third-party-articles/  301
+/blog/Blog*                        /                       301
+/blog/blog-post-title-*            /                       301
+/third-party-articles/*            /research/              301

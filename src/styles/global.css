@@ -2,44 +2,102 @@
 
 /* ---------------------------------------------------------------------------
    Psymark design tokens
-   Brand colours were extracted from the live Squarespace site so the new build
-   stays recognisably Psymark.
+
+   Mirrors the "Psymark Design System" project on claude.ai/design. If a value
+   changes there, change it here and nowhere else.
+
+   `--color-*: initial` deliberately deletes Tailwind's stock palette. If a
+   colour is not listed below, the utility for it does not exist and the class
+   silently does nothing. That is the lock: there is no way to reach for
+   `bg-emerald-500` by accident.
    --------------------------------------------------------------------------- */
 @theme {
-  /* Brand ------------------------------------------------------------------ */
-  --color-navy: #1f3b61; /* headings, primary text */
-  --color-navy-deep: #14283f; /* dark sections */
-  --color-ink: #0f1d30; /* navy-tinted near-black, never #000 */
+  --color-*: initial;
 
-  /* Emerald comes in two values on purpose.
-     `emerald` is the brand green (#069876) and is only safe for large display
-     text, icons and graphics: on white it measures 3.65:1, which passes AA for
-     large text but FAILS the 4.5:1 body-text threshold.
-     `emerald-ink` is the darkened version used for buttons, links and any text
-     under 18px. White on emerald-ink measures 5.75:1. */
-  --color-emerald: #069876;
-  --color-emerald-ink: #05745a;
-  --color-emerald-wash: #f4fbf8; /* section tint, from the current site */
+  --color-white: #ffffff;
+  --color-transparent: transparent;
+  --color-current: currentColor;
 
-  /* Neutrals: warm-free, tuned to sit under navy without going muddy -------- */
-  --color-paper: #ffffff;
-  --color-mist: #f6f8fa;
-  --color-line: #e2e8ef;
-  --color-slate: #4a5464; /* body copy, 7.4:1 on white */
+  /* Brand green. green-600 is the wordmark green.
+     Contrast note: green-600 on white is 3.9:1, which passes AA for large text
+     only. Anything under 18px, and every button with white text on it, uses
+     green-700 (5.2:1). Never put white text on green-600 or lighter. */
+  --color-green-50: #e7f5ef;
+  --color-green-100: #c5e8d9;
+  --color-green-200: #95d6ba;
+  --color-green-300: #5fc098;
+  --color-green-400: #27a877;
+  --color-green-500: #00a06b;
+  --color-green-600: #009966;
+  --color-green-700: #007d53;
+  --color-green-800: #005e3f;
+  --color-green-900: #00402b;
 
-  /* Type ------------------------------------------------------------------- */
-  --font-sans: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-cabinet), ui-sans-serif, system-ui, sans-serif;
-  --font-humanist: var(--font-general), ui-sans-serif, system-ui, sans-serif;
-  --font-geo: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
+  /* Navy. navy-700 is the brand navy: headings, dark sections. */
+  --color-navy-50: #eef2f7;
+  --color-navy-100: #d4deea;
+  --color-navy-200: #aabdd2;
+  --color-navy-300: #7894b4;
+  --color-navy-400: #4e6b90;
+  --color-navy-500: #345279;
+  --color-navy-600: #25446a;
+  --color-navy-700: #1e3a5f;
+  --color-navy-800: #162c49;
+  --color-navy-900: #0f1f34;
 
-  /* Shape: ONE radius for the whole site. The current site uses 10px, so we
-     keep it. Do not introduce a second radius scale. */
-  --radius-brand: 10px;
+  /* Hummingbird blue. Illustration accent only. */
+  --color-blue-50: #ebf1fb;
+  --color-blue-100: #cfddf4;
+  --color-blue-200: #9fbbe9;
+  --color-blue-300: #6691d9;
+  --color-blue-400: #3a6bc4;
+  --color-blue-500: #204593;
+  --color-blue-600: #173a85;
+  --color-blue-700: #103166;
 
-  /* Shadows are tinted navy, never pure black. */
-  --shadow-card: 0 1px 2px rgb(31 59 97 / 0.04), 0 8px 24px rgb(31 59 97 / 0.06);
-  --shadow-lift: 0 2px 4px rgb(31 59 97 / 0.06), 0 16px 40px rgb(31 59 97 / 0.1);
+  /* Slate. slate-400 is the brand gray. slate-600 is body copy (7.5:1). */
+  --color-slate-50: #f6f8fa;
+  --color-slate-100: #eef1f4;
+  --color-slate-200: #e2e7ec;
+  --color-slate-300: #cdd5dd;
+  --color-slate-400: #a8a9ac;
+  --color-slate-500: #6b7785;
+  --color-slate-600: #4b5662;
+  --color-slate-700: #343c45;
+  --color-slate-800: #232930;
+  --color-slate-900: #14181d;
+
+  /* VMS four-tier classification. Proficient, Emerging, Observation,
+     Intervention. Used on score pages, not on marketing pages. */
+  --color-tier-proficient: #009966;
+  --color-tier-emerging: #2f7bd1;
+  --color-tier-observation: #e29a2e;
+  --color-tier-intervention: #d6543f;
+
+  /* Type. Both families are self-hosted by Astro, see astro.config.mjs. */
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Shape. Buttons and pills use md (10px), cards and images use lg (14px).
+     Those two plus `full` are the whole vocabulary. */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* Elevation. Cool-tinted, never pure black. */
+  --shadow-card: 0 1px 2px rgb(30 58 95 / 0.04), 0 8px 24px rgb(30 58 95 / 0.06);
+  --shadow-lift: 0 4px 12px rgb(20 41 64 / 0.08), 0 2px 4px rgb(20 41 64 / 0.04);
+  --shadow-brand: 0 4px 16px rgb(0 153 102 / 0.3);
+  --shadow-brand-sm: 0 2px 10px rgb(0 153 102 / 0.28);
+}
+
+/* One gutter for the whole site. Header, footer and every section use this, so
+   the logo, the h1 and every body paragraph share a left edge all the way down
+   the page. Do not hand-roll a container. */
+@utility psy-container {
+  margin-inline: auto;
+  max-width: 1240px;
+  padding-inline: clamp(24px, 5vw, 64px);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -50,28 +108,42 @@ html {
 }
 
 body {
-  background: var(--color-paper);
-  color: var(--color-slate);
+  background: var(--color-white);
+  color: var(--color-slate-600);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Numbers in score tables must not jitter between rows. */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* Scores must not jitter between rows. */
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* Visible focus for keyboard users. This audience includes people who rely on
-   it, and the current site loses the ring in several places. */
-:where(a, button, input, select, textarea, summary):focus-visible {
-  outline: 2px solid var(--color-emerald-ink);
-  outline-offset: 2px;
-  border-radius: 4px;
+::selection {
+  background: var(--color-green-100);
+  color: var(--color-navy-800);
 }
 
-/* Motion is set at MOTION_INTENSITY 4: entrance reveals and hover feedback
-   only. Everything collapses to static when the visitor asks it to. */
+/* Visible focus for keyboard users. This audience includes people who rely on
+   it, and the old site lost the ring in several places. */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(0 153 102 / 0.3);
+  border-radius: var(--radius-sm);
+}
+
+/* Motion is restrained: entrance reveals and hover feedback only. Scroll-driven
+   animation costs no JavaScript and collapses to static on request. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -87,16 +159,16 @@ body {
 
 @media (prefers-reduced-motion: no-preference) {
   [data-reveal] {
-    animation: reveal-up linear both;
+    animation: psy-rise linear both;
     animation-timeline: view();
-    animation-range: entry 10% cover 32%;
+    animation-range: entry 8% cover 30%;
   }
 }
 
-@keyframes reveal-up {
+@keyframes psy-rise {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;

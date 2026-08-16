@@ -1,0 +1,223 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { COMPANY } from '../consts';
+
+// The technical manual goes out by email, so both CTAs are the same mailto with
+// different subject lines. Address comes from consts so it changes in one place.
+const manualHref = `mailto:${COMPANY.email}?subject=VMAT%20technical%20manual`;
+const researchHref = `mailto:${COMPANY.email}?subject=VMAT%20research`;
+
+// Three of these four are marked `pending` and render in muted italic, the same
+// treatment `help.astro` gives an unconfirmed answer. This is deliberate: this
+// page is what a district reads before purchasing, and a standardization figure
+// or a reliability coefficient invented to fill a gap would be a fabricated
+// research claim. The age range is the only hard number on the page, and it is
+// corroborated by the norms answer on the help page. Replace `value` and delete
+// `pending` when Karen supplies the real figures.
+const specs = [
+  { label: 'Standardized age range', value: '4 to 9 years' },
+  { label: 'Sample size', value: 'Figure to confirm', pending: true },
+  { label: 'Collection window', value: 'Dates to confirm', pending: true },
+  {
+    label: 'Reliability and validity coefficients',
+    value: 'In the technical manual',
+    pending: true,
+  },
+];
+
+// What the manual covers, not what it concludes. Nothing here asserts a result.
+const manualContents = [
+  {
+    term: 'Standardization sample',
+    detail: 'Composition by age, sex, region, and school setting.',
+  },
+  {
+    term: 'Score derivation',
+    detail: 'Raw metrics to standard scores and percentile ranks.',
+  },
+  { term: 'Reliability', detail: 'Internal consistency and test-retest evidence.' },
+  {
+    term: 'Validity',
+    detail: 'Relationship to established visual-motor integration measures.',
+  },
+  {
+    term: 'Administration and use',
+    detail: 'Qualifications, setup, and conditions for a valid administration.',
+  },
+  { term: 'Interpretation', detail: 'Reading a report, and the limits of a single score.' },
+];
+
+const scoringPoints = [
+  {
+    title: 'Scored from the stroke data',
+    detail: "Not from an examiner's read of the finished shape.",
+  },
+  {
+    title: 'No scoring key to interpret',
+    detail: 'Nothing to eyeball, measure with a ruler, or round in either direction.',
+  },
+  {
+    title: 'Identical across administrations',
+    detail: 'The same protocol whether it is September or May, your office or the next district.',
+  },
+];
+---
+
+{/* No `schema` prop on purpose. JSON-LD asserting Dataset or FAQ properties we
+    cannot substantiate would be worse than shipping no structured data. */}
+<Base
+  title="Research"
+  description="How the VMAT was standardized, how it is scored, and what the technical manual covers, for the school psychologist who has to defend the score."
+>
+  <Header />
+
+  <main id="main">
+    <section class="border-b border-green-100 bg-green-50">
+      <div class="psy-container pb-22 pt-20">
+        <h1
+          class="max-w-[24ch] text-[clamp(40px,4.6vw,60px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-navy-700"
+        >
+          The evidence behind the score.
+        </h1>
+        <p class="mt-[22px] max-w-[56ch] text-[19px] leading-relaxed text-slate-600">
+          How the VMAT was standardized, how it is scored, and what the technical documentation
+          covers. Written for the person who has to defend the number in an eligibility meeting.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a
+            href={manualHref}
+            class="inline-flex h-13 items-center rounded-md bg-green-700 px-7 text-[17px] font-semibold text-white shadow-brand transition-colors hover:bg-green-800 active:bg-green-900"
+          >
+            Request the technical manual
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="psy-container grid items-start gap-[clamp(40px,6vw,80px)] py-26 md:grid-cols-[6fr_5fr]"
+    >
+      <div data-reveal>
+        <h2
+          class="text-[clamp(28px,3vw,40px)] font-bold leading-[1.15] tracking-[-0.025em] text-navy-700"
+        >
+          Norms collected after 2020
+        </h2>
+        <p class="mt-5 max-w-[56ch] text-[19px] leading-[1.65] text-slate-600">
+          Visual-motor performance in early elementary students shifted through the pandemic years.
+          A student compared against a sample collected in the 1990s can look further behind, or
+          further ahead, than they are. The VMAT is normed on a post-COVID standardization sample,
+          so the comparison group is the one your student actually belongs to.
+        </p>
+        <p class="mt-[18px] max-w-[56ch] text-[19px] leading-[1.65] text-slate-600">
+          Standard scores, percentile ranks, and the normal curve in every report are drawn from
+          that sample.
+        </p>
+      </div>
+
+      {/* Figures are tabular + mono so the confirmed row lines up with the rows
+          that replace the placeholders later. */}
+      <dl class="m-0 overflow-hidden rounded-lg border border-slate-200">
+        {
+          specs.map((s) => (
+            <div class="border-b border-slate-200 px-6 py-5 last:border-b-0">
+              <dt class="text-sm text-slate-500">{s.label}</dt>
+              <dd
+                class:list={[
+                  'm-0 mt-1.5',
+                  s.pending
+                    ? 'text-base italic text-slate-500'
+                    : 'tabular font-mono text-2xl font-semibold text-navy-700',
+                ]}
+              >
+                {s.value}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="bg-navy-700">
+      <div class="psy-container py-26">
+        <h2
+          class="max-w-[26ch] text-[clamp(28px,3.4vw,44px)] font-bold leading-[1.14] tracking-[-0.03em] text-white"
+        >
+          Two raters, one score.
+        </h2>
+        <p class="mt-5 max-w-[56ch] text-[19px] leading-[1.65] text-white/78">
+          On paper protocols, the same drawing can earn different credit from different examiners,
+          and the difference is invisible once the packet is filed. The VMAT measures the student's
+          strokes directly: line precision, angles, and form are computed the same way every
+          administration, on every iPad, at every site.
+        </p>
+
+        <div class="mt-11 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {
+            scoringPoints.map((p) => (
+              <div class="border-t border-white/20 pt-[18px]">
+                <div class="text-[18px] font-bold text-white">{p.title}</div>
+                <p class="mt-2.5 text-base leading-relaxed text-white/72">{p.detail}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-slate-200 bg-slate-50">
+      <div class="psy-container py-26">
+        <h2
+          class="text-[clamp(28px,3vw,40px)] font-bold tracking-[-0.025em] text-navy-700"
+        >
+          What the technical manual covers
+        </h2>
+
+        <dl class="mt-10 grid gap-x-[clamp(40px,6vw,80px)] sm:grid-cols-2">
+          {
+            manualContents.map((c) => (
+              <div class="border-b border-slate-200 py-5">
+                <dt class="text-[17px] font-semibold text-navy-700">{c.term}</dt>
+                <dd class="m-0 mt-2 text-[15px] leading-relaxed text-slate-600">{c.detail}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        {/* Future tense stays future tense. Nothing is claimed to be published. */}
+        <p class="mt-8 text-base text-slate-600">
+          Peer-reviewed publications and conference presentations will be listed here as they are
+          available.{' '}
+          <a href={researchHref} class="font-semibold text-green-700 hover:text-green-800"
+            >Ask for what exists today</a
+          >
+        </p>
+      </div>
+    </section>
+
+    <section class="bg-green-700">
+      <div class="psy-container flex flex-wrap items-center justify-between gap-8 py-22">
+        <div>
+          <h2
+            class="max-w-[20ch] text-[clamp(30px,3.8vw,48px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white"
+          >
+            Read it before you buy it.
+          </h2>
+          <p class="mt-4 max-w-[46ch] text-[18px] leading-relaxed text-white/92">
+            The technical manual goes out on request, and your first hundred tests are free.
+          </p>
+        </div>
+        <a
+          href={manualHref}
+          class="inline-flex h-14 flex-none items-center rounded-md bg-white px-8 text-[17px] font-semibold text-green-800 transition-colors hover:bg-green-50 active:scale-[0.98]"
+        >
+          Request the technical manual
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>

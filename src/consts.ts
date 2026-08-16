@@ -10,10 +10,21 @@ export const SITE = {
   /** Fallback description. Individual pages should always set their own. */
   description:
     'VMAT is the first fully digital standardized visual-motor assessment for iPad. Automatic scoring, instant reports, and post-COVID norms for school psychologists and occupational therapists.',
-  /** Must match `site` in astro.config.mjs. */
+  /** Production canonical. The deploy target can override it, see astro.config.mjs. */
   url: 'https://www.psymark.ai',
   locale: 'en_US',
 } as const;
+
+/**
+ * Prefixes an internal path with the deploy base path.
+ *
+ * On psymark.ai the site lives at the domain root and this is a no-op. The
+ * GitHub Pages demo serves from `/psymark-demo-site/`, where every absolute
+ * href and every file in `public/` has to carry that prefix or 404. Use this
+ * for internal links and for anything under `public/`. Images imported from
+ * `src/assets/` go through Astro's `<Image>` and are prefixed automatically.
+ */
+export const url = (path: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${path}`;
 
 export const COMPANY = {
   legalName: 'Psymark, Inc.',
@@ -23,7 +34,8 @@ export const COMPANY = {
 
 /** Primary navigation. Must stay on ONE line at desktop: keep it to 5 items. */
 export const NAV = [
-  { label: 'VMAT', href: '/vmat/' },
+  // The homepage IS the VMAT page. There is no separate /vmat/.
+  { label: 'VMAT', href: '/' },
   { label: 'Other Tests', href: '/other-tests/' },
   { label: 'Research', href: '/research/' },
   { label: 'Help', href: '/help/' },
