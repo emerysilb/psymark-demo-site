@@ -1,0 +1,294 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { COMPANY, STORE_URL, CTA } from '../consts';
+import vmatShot from '../assets/ipad-results.png';
+import vmsShot from '../assets/product-vms.png';
+import vmpShot from '../assets/product-vmp.png';
+
+/**
+ * PRICES ARE THE SOURCE OF TRUTH FOR THIS PAGE AND ITS SCHEMA.
+ *
+ * Taken from the Square store on 2026-08-16, which is the store the Buy
+ * buttons actually point at. Change a number here and the card, the comparison
+ * row and the structured data all follow.
+ *
+ * If a price changes in Square, change it here in the same sitting. A pricing
+ * page that disagrees with checkout is worse than no pricing page.
+ *
+ * `was` is a list price shown struck through. Delete the line when a sale ends.
+ */
+const products = [
+  {
+    sku: 'vmat',
+    name: 'Visual Motor Abilities Test',
+    abbr: 'VMAT',
+    term: '1 year license',
+    price: 9.99,
+    was: 49.99,
+    shot: vmatShot,
+    alt: 'The VMAT score report on iPad: a standard score plotted on the normal curve beside percentile ranks.',
+    // The store's VMAT listing has no feature copy of its own, so these are
+    // this site's existing VMAT claims, not new ones. Do not add to them.
+    who: 'Occupational therapists and school psychologists',
+    features: [
+      'Standardized assessment for ages 4 to 9, normed on a post-COVID sample',
+      'Automatic self-scoring, with the standard score ready when the student stands up',
+      'Standard scores, percentile ranks, and the normal curve in every report',
+      'Goal language you can move straight into the evaluation',
+    ],
+  },
+  {
+    sku: 'vms',
+    name: 'Psymark Visual Motor Screener',
+    abbr: 'VMS',
+    term: '1 year license',
+    price: 9.99,
+    shot: vmsShot,
+    alt: 'The VMS result screen on iPad, showing a performance category and percentile band with written descriptions.',
+    who: 'Teachers and interventionists',
+    // Verbatim from the current store listing.
+    features: [
+      'Quick, accurate assessments: evaluate fine motor skills and handwriting proficiency',
+      'Four-tier classification system: Proficient, Emerging, Observation, or Intervention',
+      'Customized intervention recommendations based on individual results',
+      'Comprehensive reporting: generate easy-to-understand reports instantly',
+      'Download or print reports for parent conferences, IEP meetings, or referrals',
+      'Automatic self-scoring within minutes',
+    ],
+  },
+  {
+    sku: 'vmp',
+    name: 'Psymark Visual Motor Progress Monitoring',
+    abbr: 'VMP',
+    term: '1 year license',
+    price: 19.99,
+    shot: vmpShot,
+    alt: 'The VMP progress screen on iPad, tracking a student against their own baseline across the year.',
+    who: 'Anyone writing and defending a goal',
+    // Verbatim from the current store listing.
+    features: [
+      'Monitor progress in letters and numbers',
+      'Quick and easy to administer in any setting',
+      'Automatic self-scoring within minutes',
+      'Real time data on multiple features of letter and number formation',
+      'Individual objective scores specific to student or client performance',
+      'No paper, pencils, protractors, rulers, or eyeballing in scoring',
+      'Finger or stylus, whichever the student uses',
+    ],
+  },
+];
+
+const training = {
+  intro:
+    'Equip your team with the skills and confidence to administer and interpret the iPad tools. This interactive two-hour training is built for occupational therapists, school psychologists, and educators working in clinical and school settings.',
+  covers: [
+    'A guided walkthrough of the visual-motor testing products',
+    'Best practices for administering assessments on iPads',
+    'Interpretation of results and report features',
+    'Time for questions with a product expert',
+  ],
+  options: [
+    { name: '2 hour virtual training', price: 500, note: 'Live via Zoom or your preferred platform' },
+    { name: '2 hour in-person training', price: 1200, note: 'On site with your team' },
+  ],
+};
+
+const money = (n: number) =>
+  n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+
+// Built from the same array as the visible prices, so the two cannot drift.
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': products.map((p) => ({
+    '@type': 'Product',
+    name: `${p.name} (${p.abbr}) ${p.term}`,
+    brand: { '@type': 'Brand', name: COMPANY.legalName },
+    offers: {
+      '@type': 'Offer',
+      price: p.price.toFixed(2),
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+      url: STORE_URL,
+    },
+  })),
+};
+---
+
+<Base
+  title="Pricing"
+  description="What each Psymark tool costs: VMAT, the Visual Motor Screener, and Progress Monitoring are annual licenses under $20. Team training is priced per session."
+  schema={schema}
+>
+  <Header />
+
+  <main id="main">
+    <section class="border-b border-green-100 bg-green-50">
+      <div class="psy-container pb-18 pt-20">
+        <h1
+          class="max-w-[22ch] text-[clamp(40px,4.6vw,60px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-navy-700"
+        >
+          Every tool is a one-year license.
+        </h1>
+        <p class="mt-[22px] max-w-[56ch] text-[19px] leading-relaxed text-slate-600">
+          Priced per practitioner, per year. No per-test fee, no credit card to start, and no
+          automatic renewal. Checkout is handled by the Psymark store.
+        </p>
+      </div>
+    </section>
+
+    <section class="psy-container py-26">
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {
+          products.map((p) => (
+            <article
+              data-reveal
+              class="flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white shadow-card"
+            >
+              {/* Screenshots come in different aspect ratios. The image is
+                  positioned out of flow so a tall one cannot stretch the frame:
+                  `aspect-ratio` alone grows to fit oversized content. */}
+              <div class="relative aspect-[4/3] overflow-hidden bg-slate-50">
+                <Image
+                  src={p.shot}
+                  alt={p.alt}
+                  widths={[320, 480, 640]}
+                  sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
+                  class="absolute inset-0 h-full w-full object-contain p-5"
+                />
+              </div>
+
+              <div class="flex flex-1 flex-col p-8">
+                <div class="font-mono text-sm font-semibold tracking-[0.04em] text-green-700">
+                  {p.abbr}
+                </div>
+                <h2 class="mt-2 text-[22px] font-bold leading-[1.25] tracking-[-0.01em] text-navy-700">
+                  {p.name}
+                </h2>
+
+                <div class="mt-5 flex items-baseline gap-3">
+                  <span class="tabular font-mono text-[34px] font-semibold tracking-[-0.02em] text-navy-700">
+                    {money(p.price)}
+                  </span>
+                  {p.was && (
+                    <span class="tabular font-mono text-[18px] text-slate-500 line-through">
+                      {money(p.was)}
+                    </span>
+                  )}
+                </div>
+                <div class="mt-1 text-sm text-slate-500">{p.term}</div>
+
+                <div class="mt-6 border-t border-slate-200 pt-5 text-sm font-semibold text-navy-700">
+                  {p.who}
+                </div>
+                <ul class="mt-3 list-none space-y-2.5 p-0">
+                  {p.features.map((f) => (
+                    <li class="flex gap-2.5 text-[15px] leading-[1.55] text-slate-600">
+                      <svg
+                        viewBox="0 0 20 20"
+                        class="mt-[3px] h-4 w-4 flex-none text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M4 10.5l4 4 8-9" />
+                      </svg>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* mt-auto pins every Buy button to the bottom of its card, so
+                    they line up across the row despite different feature counts. */}
+                <div class="mt-auto pt-8">
+                  <a
+                    href={STORE_URL}
+                    class="inline-flex h-12 w-full items-center justify-center rounded-md bg-green-700 px-6 text-[16px] font-semibold text-white shadow-brand-sm transition-colors hover:bg-green-800 active:bg-green-900"
+                  >
+                    Buy the {p.abbr}
+                  </a>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="bg-navy-700">
+      <div
+        class="psy-container grid items-start gap-[clamp(40px,6vw,80px)] py-26 md:grid-cols-[6fr_5fr]"
+      >
+        <div>
+          <h2
+            class="max-w-[24ch] text-[clamp(28px,3.4vw,44px)] font-bold leading-[1.14] tracking-[-0.03em] text-white"
+          >
+            Training for a whole team.
+          </h2>
+          <p class="mt-5 max-w-[54ch] text-[19px] leading-relaxed text-white/78">{training.intro}</p>
+          <ul class="mt-8 list-none p-0">
+            {
+              training.covers.map((c) => (
+                <li class="border-t border-white/20 py-3.5 text-[16px] leading-relaxed text-white/72">
+                  {c}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="overflow-hidden rounded-lg bg-white/14 p-px">
+          {
+            training.options.map((o) => (
+              <div class="bg-navy-800 p-6 first:rounded-t-lg last:rounded-b-lg">
+                <div class="flex items-baseline justify-between gap-4">
+                  <span class="text-[16px] font-semibold text-white">{o.name}</span>
+                  <span class="tabular flex-none font-mono text-[26px] font-semibold text-green-300">
+                    {money(o.price)}
+                  </span>
+                </div>
+                <p class="mt-2 text-[15px] leading-relaxed text-white/72">{o.note}</p>
+              </div>
+            ))
+          }
+          <div class="mt-px bg-navy-800 p-6">
+            <a
+              href={`mailto:${COMPANY.email}?subject=Team%20training`}
+              class="inline-flex h-12 items-center rounded-md bg-white px-6 text-[16px] font-semibold text-navy-800 transition-colors hover:bg-slate-100 active:scale-[0.98]"
+            >
+              Schedule a training
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-green-700">
+      <div class="psy-container flex flex-wrap items-center justify-between gap-8 py-22">
+        <div>
+          <h2
+            class="max-w-[18ch] text-[clamp(30px,3.8vw,48px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-white"
+          >
+            Your first hundred tests are free.
+          </h2>
+          <p class="mt-4 max-w-[46ch] text-[18px] leading-relaxed text-white/92">
+            Enough to run it across a real caseload before deciding anything.
+          </p>
+        </div>
+        <a
+          href={STORE_URL}
+          class="inline-flex h-14 flex-none items-center rounded-md bg-white px-8 text-[17px] font-semibold text-green-800 transition-colors hover:bg-green-50 active:scale-[0.98]"
+        >
+          {CTA.primary}
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>

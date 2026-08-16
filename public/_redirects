@@ -38,6 +38,12 @@
 /training-vmat                     /other-tests/           301
 /training-info                     /other-tests/           301
 
+# --- Old Squarespace store -----------------------------------------------
+# Checkout moved to the Square store. These land on /pricing/, which lists the
+# same products and links out to it.
+/store                             /pricing/               301
+/store/*                           /pricing/               301
+
 # --- Campaign and form pages ---------------------------------------------
 # The homepage IS the VMAT page, so /lp lands there rather than on a /vmat/
 # that does not exist. /help/ leads with the phone number and email, so it is

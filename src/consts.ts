@@ -38,6 +38,7 @@ export const NAV = [
   { label: 'VMAT', href: '/' },
   { label: 'Other Tests', href: '/other-tests/' },
   { label: 'Research', href: '/research/' },
+  { label: 'Pricing', href: '/pricing/' },
   { label: 'Help', href: '/help/' },
 ] as const;
 
