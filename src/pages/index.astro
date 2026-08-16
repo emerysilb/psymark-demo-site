@@ -1,0 +1,94 @@
+---
+/**
+ * TEMPORARY HOMEPAGE: the concept chooser.
+ *
+ * Once a direction is picked, this file is replaced by the real homepage built
+ * from the winning concept, and src/pages/concepts/ is deleted. See CLAUDE.md,
+ * "Picking a design direction".
+ */
+import Base from '../layouts/Base.astro';
+
+const concepts = [
+  {
+    id: 'a',
+    name: 'The Clinical Standard',
+    thesis: 'VMAT is a real standardized instrument, not an app.',
+    argument:
+      'Leads with defensibility: consistent administration, post-2020 norms, report-ready output. Navy-dominant, Switzer, low motion.',
+    bestFor: 'Skeptical veteran clinicians and district purchasing.',
+    risk: 'Plays it safe. Reads closest to the incumbents it is trying to beat.',
+    accent: 'bg-navy',
+  },
+  {
+    id: 'b',
+    name: 'The Evening Back',
+    thesis: 'The product is time returned to you.',
+    argument:
+      'Leads with caseload pressure and after-hours report writing. Cabinet Grotesk display, emerald-forward, generous air, warmer voice.',
+    bestFor: 'The individual OT or school psych buying with their own PD budget.',
+    risk: 'Sells convenience. A district committee may want the evidence first.',
+    accent: 'bg-emerald-ink',
+  },
+  {
+    id: 'c',
+    name: 'What The Paper Form Throws Away',
+    thesis: 'Paper keeps the drawing and loses everything else.',
+    argument:
+      'The sharpest attack on the incumbent. Dark, confident, argument-led. Satoshi, ink surface, emerald as the only signal colour.',
+    bestFor: 'Clinicians who already own a Beery VMI and need a reason to switch.',
+    risk: 'The central claim needs confirming with Karen before it can ship.',
+    accent: 'bg-ink',
+  },
+];
+---
+
+<Base
+  title="Design concepts"
+  description="Three design directions for the Psymark site rebuild, each with a different strategic argument for VMAT. Internal review only."
+  noindex
+>
+  <main id="main" class="mx-auto max-w-[1000px] px-6 py-20">
+    <h1 class="font-sans text-4xl font-bold tracking-tight text-navy md:text-5xl">
+      Three directions for Psymark
+    </h1>
+    <p class="mt-5 max-w-[62ch] text-lg leading-relaxed text-slate">
+      Same brand colours, same content, same product. What changes is the
+      argument each one makes for VMAT, and the visual language that follows
+      from it. Open each, then pick the argument you believe.
+    </p>
+
+    <div class="mt-14 space-y-5">
+      {concepts.map((c) => (
+        <a
+          href={`/concepts/${c.id}/`}
+          class="group grid gap-6 rounded-brand border border-line p-7 transition-all hover:border-navy/30 hover:shadow-card md:grid-cols-12"
+        >
+          <div class="md:col-span-4">
+            <div class={`h-24 rounded-brand ${c.accent}`}></div>
+          </div>
+          <div class="md:col-span-8">
+            <h2 class="text-2xl font-bold tracking-tight text-navy">
+              {c.name}
+              <span
+                class="ml-2 align-middle text-sm font-medium text-emerald-ink opacity-0 transition-opacity group-hover:opacity-100"
+                >Open</span
+              >
+            </h2>
+            <p class="mt-2 text-lg text-navy/80">{c.thesis}</p>
+            <p class="mt-4 max-w-[62ch] leading-relaxed text-slate">{c.argument}</p>
+            <dl class="mt-5 space-y-1.5 text-sm">
+              <div class="flex gap-2">
+                <dt class="shrink-0 font-semibold text-navy">Best for</dt>
+                <dd class="text-slate">{c.bestFor}</dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="shrink-0 font-semibold text-navy">Risk</dt>
+                <dd class="text-slate">{c.risk}</dd>
+              </div>
+            </dl>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+</Base>

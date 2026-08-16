@@ -1,0 +1,45 @@
+# Cloudflare Pages redirects. Format: /from  /to  status
+#
+# Migration map off Squarespace. The old site had 115 URLs in its sitemap,
+# including duplicate and abandoned pages that were all publicly indexable.
+# These 301s consolidate the duplicates and retire the cruft without dropping
+# whatever link equity they picked up.
+#
+# Add a line here BEFORE renaming or deleting any page.
+
+# --- Duplicate homepage --------------------------------------------------
+/home                              /                       301
+/home-1                            /                       301
+
+# --- Abandoned drafts left public on the old site ------------------------
+# (/blog-old was literally titled "NO Blog OLD")
+/blog-old                          /blog/                  301
+/blog-old/*                        /blog/                  301
+/blog-new                          /blog/                  301
+/resources-no                      /research/              301
+/help-no                           /help/                  301
+/about-no                          /about/                 301
+
+# --- Help section had six overlapping paths ------------------------------
+/faqs                              /help/                  301
+/manual                            /help/                  301
+/app-manuals                       /help/                  301
+/instructions                      /help/                  301
+/tutorial                          /tutorials/             301
+/written-tutorials                 /tutorials/             301
+
+# --- Training had four -----------------------------------------------------
+/training                          /other-tests/           301
+/training-1                        /other-tests/           301
+/training-vmat                     /other-tests/           301
+/training-info                     /other-tests/           301
+
+# --- Campaign and form pages ---------------------------------------------
+/lp                                /vmat/                  301
+/lets-connect                      /contact/               301
+/standardization-research-interest /research/              301
+
+# --- Placeholder posts that should never have been indexed ---------------
+/blog/Blog*                        /blog/                  301
+/blog/blog-post-title-*            /blog/                  301
+/third-party-articles/blog-post-title-*  /third-party-articles/  301

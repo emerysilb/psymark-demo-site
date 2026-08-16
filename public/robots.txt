@@ -1,0 +1,14 @@
+# Psymark
+#
+# Note: the old Squarespace site blocked every AI crawler (GPTBot, ClaudeBot,
+# PerplexityBot, Google-Extended and friends) via the default Squarespace
+# toggle. For a company selling a digital assessment on a .ai domain, being
+# invisible to the assistants practitioners now ask for recommendations is a
+# real cost. They are allowed here on purpose.
+#
+# To reverse that decision, add the blocks back below.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://www.psymark.ai/sitemap-index.xml

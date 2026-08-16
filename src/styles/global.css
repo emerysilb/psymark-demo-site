@@ -1,0 +1,105 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Psymark design tokens
+   Brand colours were extracted from the live Squarespace site so the new build
+   stays recognisably Psymark.
+   --------------------------------------------------------------------------- */
+@theme {
+  /* Brand ------------------------------------------------------------------ */
+  --color-navy: #1f3b61; /* headings, primary text */
+  --color-navy-deep: #14283f; /* dark sections */
+  --color-ink: #0f1d30; /* navy-tinted near-black, never #000 */
+
+  /* Emerald comes in two values on purpose.
+     `emerald` is the brand green (#069876) and is only safe for large display
+     text, icons and graphics: on white it measures 3.65:1, which passes AA for
+     large text but FAILS the 4.5:1 body-text threshold.
+     `emerald-ink` is the darkened version used for buttons, links and any text
+     under 18px. White on emerald-ink measures 5.75:1. */
+  --color-emerald: #069876;
+  --color-emerald-ink: #05745a;
+  --color-emerald-wash: #f4fbf8; /* section tint, from the current site */
+
+  /* Neutrals: warm-free, tuned to sit under navy without going muddy -------- */
+  --color-paper: #ffffff;
+  --color-mist: #f6f8fa;
+  --color-line: #e2e8ef;
+  --color-slate: #4a5464; /* body copy, 7.4:1 on white */
+
+  /* Type ------------------------------------------------------------------- */
+  --font-sans: var(--font-switzer), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cabinet), ui-sans-serif, system-ui, sans-serif;
+  --font-humanist: var(--font-general), ui-sans-serif, system-ui, sans-serif;
+  --font-geo: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
+
+  /* Shape: ONE radius for the whole site. The current site uses 10px, so we
+     keep it. Do not introduce a second radius scale. */
+  --radius-brand: 10px;
+
+  /* Shadows are tinted navy, never pure black. */
+  --shadow-card: 0 1px 2px rgb(31 59 97 / 0.04), 0 8px 24px rgb(31 59 97 / 0.06);
+  --shadow-lift: 0 2px 4px rgb(31 59 97 / 0.06), 0 16px 40px rgb(31 59 97 / 0.1);
+}
+
+/* --------------------------------------------------------------------------- */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-slate);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Numbers in score tables must not jitter between rows. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Visible focus for keyboard users. This audience includes people who rely on
+   it, and the current site loses the ring in several places. */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--color-emerald-ink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Motion is set at MOTION_INTENSITY 4: entrance reveals and hover feedback
+   only. Everything collapses to static when the visitor asks it to. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    animation: reveal-up linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 32%;
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

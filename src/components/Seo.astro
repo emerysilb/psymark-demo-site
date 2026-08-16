@@ -1,0 +1,77 @@
+---
+import { SITE, COMPANY } from '../consts';
+
+interface Props {
+  title: string;
+  /** REQUIRED. The build fails without it. See the throw below. */
+  description: string;
+  /** Path to an OG image in /public. Falls back to the shared card. */
+  image?: string;
+  /** Set true on pages that must never be indexed (concepts, thank-you pages). */
+  noindex?: boolean;
+  /** Optional extra JSON-LD, merged after the sitewide Organization block. */
+  schema?: Record<string, unknown>;
+}
+
+const { title, description, image = '/img/og-default.png', noindex = false, schema } = Astro.props;
+
+/* ---------------------------------------------------------------------------
+   SEO guardrails.
+   The old Squarespace site shipped an EMPTY meta description on all 18 pages.
+   That cannot happen again, so a missing description is a hard build error
+   rather than a silent omission.
+   --------------------------------------------------------------------------- */
+if (!description || description.trim().length === 0) {
+  throw new Error(
+    `[SEO] Page "${Astro.url.pathname}" is missing a description.\n` +
+      `Every page must pass one to <Base>. Aim for 120-158 characters that a ` +
+      `school psychologist or OT would actually click.`
+  );
+}
+
+const len = description.trim().length;
+if (len < 70 || len > 158) {
+  console.warn(
+    `[SEO] ${Astro.url.pathname}: description is ${len} chars. ` +
+      `Google renders roughly 120-158. Consider rewriting.`
+  );
+}
+
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const ogImage = new URL(image, SITE.url).href;
+const fullTitle = title === SITE.name ? title : `${title} | ${SITE.titleSuffix}`;
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: COMPANY.legalName,
+  url: SITE.url,
+  logo: new URL('/img/logo.png', SITE.url).href,
+  email: COMPANY.email,
+  telephone: COMPANY.phone,
+};
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content={SITE.locale} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<script type="application/ld+json" set:html={JSON.stringify(organization)} />
+{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}

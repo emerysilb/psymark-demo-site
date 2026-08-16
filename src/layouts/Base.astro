@@ -1,0 +1,44 @@
+---
+import { Font } from 'astro:assets';
+import Seo from '../components/Seo.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  schema?: Record<string, unknown>;
+  /** Extra classes on <body>, used by concept pages to swap type stacks. */
+  bodyClass?: string;
+}
+
+const { bodyClass = '', ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    {/* Self-hosted, subset and preloaded by Astro. No external font requests. */}
+    <Font cssVariable="--font-switzer" preload />
+    <Font cssVariable="--font-cabinet" preload />
+    <Font cssVariable="--font-general" />
+    <Font cssVariable="--font-satoshi" preload />
+
+    <Seo {...seo} />
+  </head>
+  <body class={bodyClass}>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-brand focus:bg-navy focus:px-4 focus:py-2 focus:text-white"
+    >
+      Skip to content
+    </a>
+    <slot />
+  </body>
+</html>
