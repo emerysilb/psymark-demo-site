@@ -9,15 +9,17 @@ import { COMPANY } from '../consts';
 const manualHref = `mailto:${COMPANY.email}?subject=VMAT%20technical%20manual`;
 const researchHref = `mailto:${COMPANY.email}?subject=VMAT%20research`;
 
-// Three of these four are marked `pending` and render in muted italic, the same
-// treatment `help.astro` gives an unconfirmed answer. This is deliberate: this
-// page is what a district reads before purchasing, and a standardization figure
-// or a reliability coefficient invented to fill a gap would be a fabricated
-// research claim. The age range is the only hard number on the page, and it is
-// corroborated by the norms answer on the help page. Replace `value` and delete
-// `pending` when Karen supplies the real figures.
+// These describe the VMAT specifically. The VMS and the VMP are different
+// instruments and nothing on this page should be read as norming them.
+//
+// The `pending` rows render in muted italic, the same treatment `help.astro`
+// gives an unconfirmed answer. This is deliberate: this page is what a district
+// reads before purchasing, and a standardization figure or a reliability
+// coefficient invented to fill a gap would be a fabricated research claim.
+// Replace `value` and delete `pending` when Karen supplies the real figures.
 const specs = [
   { label: 'Standardized age range', value: '4 to 11 years' },
+  { label: 'States represented', value: '41 of 50, across all four regions' },
   { label: 'Sample size', value: 'Figure to confirm', pending: true },
   { label: 'Collection window', value: 'Dates to confirm', pending: true },
   {
@@ -103,7 +105,7 @@ const scoringPoints = [
         <h2
           class="text-[clamp(28px,3vw,40px)] font-bold leading-[1.15] tracking-[-0.025em] text-navy-700"
         >
-          Post Covid Norms
+          Post Covid Norms for the VMAT
         </h2>
         <p class="mt-5 max-w-[56ch] text-[19px] leading-[1.65] text-slate-600">
           Visual-motor performance in elementary students shifted through the pandemic years.
@@ -112,8 +114,9 @@ const scoringPoints = [
           group is the one your student actually belongs to.
         </p>
         <p class="mt-[18px] max-w-[56ch] text-[19px] leading-[1.65] text-slate-600">
-          Standard scores, percentile ranks, and the normal curve in every report are drawn from
-          that sample.
+          That sample draws from 41 states across all four regions, so it is not a single district
+          or a single part of the country standing in for the rest. Standard scores, percentile
+          ranks, and the normal curve in every VMAT report are derived from it.
         </p>
       </div>
 
